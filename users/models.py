@@ -2,6 +2,9 @@ from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 from common.models import TimestampedModel
+from config.constants import Constants
+from django.core import validators
+
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
@@ -30,9 +33,9 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin, TimestampedModel):
     email = models.EmailField(unique=True)
-    first_name = models.CharField(max_length=150)
-    last_name = models.CharField(max_length=150)
-    role = models.CharField(max_length=50)
+    first_name = models.CharField(max_length=50, validators=[validators.MinLengthValidator(2)])
+    last_name = models.CharField(max_length=50, validators=[validators.MinLengthValidator(2)])
+    role = models.CharField(max_length=50, choices=Constants.UserRoles.CHOICES, default=Constants.UserRoles.USER)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 

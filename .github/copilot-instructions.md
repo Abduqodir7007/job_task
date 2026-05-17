@@ -7,6 +7,7 @@
 - Project settings, ASGI, WSGI, and root URLs live under `config/`.
 - PostgreSQL is configured through `DATABASE_URL` in `.env` via `django-environ`.
 - Django REST Framework is installed and should be registered in `config/settings.py` when building API features.
+- JWT auth is used via `djangorestframework-simplejwt`.
 - The project uses a custom user model at `users.User`; keep `AUTH_USER_MODEL` set accordingly.
 
 ## Commands
@@ -24,6 +25,7 @@
 
 - Keep app registration in `INSTALLED_APPS` inside `config/settings.py`.
 - Keep the auth swap centralized in `config/settings.py` and `users/models.py`; do not reintroduce Django's default `User`.
+- Keep API routes under `/api/` through `config/urls.py` includes.
 - Keep database settings in `config/settings.py` tied to `DATABASE_URL` rather than hardcoded engine credentials.
 - Add new URL routes in `config/urls.py`; keep project-level routing thin and delegate feature URLs to app modules.
 - Use Django/DRF defaults unless the project adds explicit settings for serializers, auth, pagination, or API versioning.
