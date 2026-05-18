@@ -17,6 +17,10 @@ DEBUG = env.bool("DEBUG", default=False)
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[])
 
+VERCEL_URL = env("VERCEL_URL", default=None)
+if VERCEL_URL:
+    ALLOWED_HOSTS.append(VERCEL_URL)
+
 
 # Application definition
 
