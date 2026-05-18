@@ -2,27 +2,31 @@ from django.contrib.auth import authenticate
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
 from config.constants import Constants
-from .models import User
+from .models import User, Role
 from django.contrib.auth.password_validation import validate_password
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
+    roles = serializers.PrimaryKeyRelatedField(queryset=Role.objects.all(), many=True, required=True)
+
     class Meta:
         model = User
-        fields = ("email", "password", "first_name", "last_name", "role")
+        fields = ("email", "password", "first_name", "last_name", "roles")
         extra_kwargs = {
             "password": {"write_only": True},
-            "role": {"required": True},
         }
-
-    def validate_role(self, value):
-        if value == Constants.UserRoles.ADMIN:
-            raise serializers.ValidationError(_("Admin role cannot be assigned during registration."))
-        return value
 
     def validate_email(self, value):
         if User.objects.filter(email=value).exists():
             raise serializers.ValidationError(_("Email is already in use."))
+        return value
+
+    def validate_roles(self, value):
+        # value is a list of Role instances
+
+        for role in value:
+            if role.name == Constants.UserRoles.ADMIN:
+                raise serializers.ValidationError(_("Admin role cannot be assigned during registration."))
         return value
 
     def validate_password(self, value):
@@ -41,8 +45,25 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
+        roles = validated_data.pop("roles", [])
         password = validated_data.pop("password")
-        return User.objects.create_user(password=password, **validated_data)
+        user = User.objects.create_user(password=password, **validated_data)
+        if roles:
+            user.roles.set(roles)
+        return user
+
+
+class RoleSerializer(serializers.ModelSerializer):
+    """Serializer for Role model."""
+
+    display = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Role
+        fields = ("id", "name", "display")
+
+    def get_display(self, obj):
+        return obj.get_name_display()
 
 
 class TokenResponseSerializer(serializers.Serializer):

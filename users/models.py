@@ -31,18 +31,31 @@ class UserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 
+class Role(models.Model):
+    """Role model backed by a fixed set of choices in config.constants."""
+
+    name = models.CharField(max_length=50, choices=Constants.UserRoles.CHOICES, unique=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        # show human readable label
+        return self.get_name_display()
+
+
 class User(AbstractBaseUser, PermissionsMixin, TimestampedModel):
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=50, validators=[validators.MinLengthValidator(2)])
     last_name = models.CharField(max_length=50, validators=[validators.MinLengthValidator(2)])
-    role = models.CharField(max_length=50, choices=Constants.UserRoles.CHOICES, default=Constants.UserRoles.DEFAULT)
+    roles = models.ManyToManyField("Role", related_name="users", default=Constants.UserRoles.DEFAULT)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
     objects = UserManager()
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["first_name", "last_name", "role"]
+    REQUIRED_FIELDS = ["first_name", "last_name"]
 
     class Meta:
         ordering = ["email"]
