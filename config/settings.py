@@ -3,6 +3,7 @@
 from datetime import timedelta
 from pathlib import Path
 
+import dj_database_url
 import environ
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -60,6 +61,7 @@ SPECTACULAR_SETTINGS = {
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -91,7 +93,11 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {"default": env.db("DATABASE_URL")}
+DATABASES = {
+    "default": dj_database_url.config(
+        default=env("DATABASE_URL"),
+    )
+}
 
 
 # Password validation
@@ -128,4 +134,5 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"

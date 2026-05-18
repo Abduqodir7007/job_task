@@ -33,7 +33,7 @@ Example:
 SECRET_KEY=your-secret-key
 DEBUG=True
 ALLOWED_HOSTS=localhost,127.0.0.1
-DATABASE_URL=postgres://postgres:password@localhost:5432/task_db
+DATABASE_URL=
 VERCEL_URL=
 ```
 
@@ -65,6 +65,17 @@ Authorization: Bearer <access_token>
 ```
 
 Register and login endpoints return both `refresh` and `access` tokens.
+
+## Test Users
+
+You can use these test users for login:
+
+| Email | Password |
+| --- | --- |
+| `admin@test.com` | `AdminUser123!` |
+| `payment@test.com` | `PaymentUser123!` |
+| `reports@test.com` | `ReportsUser123!` |
+| `user@test.com` | `RegularUser123!` |
 
 ## Pagination
 
