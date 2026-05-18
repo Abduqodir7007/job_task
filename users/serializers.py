@@ -7,7 +7,12 @@ from django.contrib.auth.password_validation import validate_password
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
-    roles = serializers.PrimaryKeyRelatedField(queryset=Role.objects.all(), many=True, required=True)
+    roles = serializers.PrimaryKeyRelatedField(
+        queryset=Role.objects.all(),
+        many=True,
+        required=True,
+        allow_empty=False,
+    )
 
     class Meta:
         model = User
@@ -86,3 +91,10 @@ class UserLoginSerializer(serializers.Serializer):
 
         attrs["user"] = user
         return attrs
+
+
+class UserDetailSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ("id", "email", "first_name", "last_name")

@@ -40,7 +40,6 @@ class Role(models.Model):
         ordering = ["name"]
 
     def __str__(self):
-        # show human readable label
         return self.get_name_display()
 
 
