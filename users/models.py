@@ -35,7 +35,7 @@ class User(AbstractBaseUser, PermissionsMixin, TimestampedModel):
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=50, validators=[validators.MinLengthValidator(2)])
     last_name = models.CharField(max_length=50, validators=[validators.MinLengthValidator(2)])
-    role = models.CharField(max_length=50, choices=Constants.UserRoles.CHOICES, default=Constants.UserRoles.USER)
+    role = models.CharField(max_length=50, choices=Constants.UserRoles.CHOICES, default=Constants.UserRoles.DEFAULT)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
@@ -50,8 +50,6 @@ class User(AbstractBaseUser, PermissionsMixin, TimestampedModel):
     def __str__(self):
         return self.email
 
-    def get_full_name(self):
+    @property
+    def full_name(self):
         return f"{self.first_name} {self.last_name}".strip()
-
-    def get_short_name(self):
-        return self.first_name
