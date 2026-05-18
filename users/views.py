@@ -10,7 +10,6 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from .serializers import UserLoginSerializer, UserRegistrationSerializer, TokenResponseSerializer, RoleSerializer
 from .utils import generate_jwt_token
-from .filters import UserFilter
 from .models import Role
 
 User = get_user_model()
