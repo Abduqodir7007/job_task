@@ -1,13 +1,14 @@
 from rest_framework import status
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.pagination import PageNumberPagination
 from django.contrib.auth import get_user_model
 from django_filters.rest_framework import DjangoFilterBackend
 
+from payments.permissions import IsAdminRole 
 from .serializers import UserLoginSerializer, UserRegistrationSerializer, TokenResponseSerializer, RoleSerializer
 from .utils import generate_jwt_token
 from .models import Role
@@ -39,6 +40,8 @@ class UserLoginView(APIView):
 
 
 class UserViewSet(ModelViewSet):
+    pagination_class =PageNumberPagination
+    permission_classes = [IsAdminRole]
     queryset = User.objects.all()
     serializer_class = UserRegistrationSerializer
     filter_backends = [DjangoFilterBackend]

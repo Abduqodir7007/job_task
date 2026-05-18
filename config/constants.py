@@ -41,12 +41,10 @@ class Constants:
         PAYME = "payme"
         CLICK = "click"
         UZUM = "uzum"
-        STRIPE = "stripe"
 
         DEFAULT = PAYME
         CHOICES = (
             (PAYME, _("Payme")),
             (CLICK, _("Click")),
             (UZUM, _("Uzum")),
-            (STRIPE, _("Stripe")),
         )

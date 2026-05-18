@@ -21,3 +21,14 @@ class PaymentDetailSerializer(serializers.ModelSerializer):
         model = Payment
         fields = ("id", "user", "amount", "method", "status", "created_at")
         read_only_fields = ("id", "user", "created_at")
+
+
+class PaymentReportByPaymentMethodSerializer(serializers.Serializer):
+    click = serializers.DecimalField(max_digits=15, decimal_places=2)
+    payme = serializers.DecimalField(max_digits=15, decimal_places=2)
+    uzum = serializers.DecimalField(max_digits=15, decimal_places=2)
+class PaymentReportSerializer(serializers.Serializer):
+    payments_by_method = PaymentReportByPaymentMethodSerializer()
+    total_sales = serializers.DecimalField(max_digits=15, decimal_places=2)
+
+    
