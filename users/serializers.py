@@ -71,6 +71,20 @@ class RoleSerializer(serializers.ModelSerializer):
         return obj.get_name_display()
 
 
+class UserRoleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Role
+        fields = ("id", "name")
+
+
+class UserResponseSerializer(serializers.ModelSerializer):
+    roles = UserRoleSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = User
+        fields = ("email", "first_name", "last_name", "roles")
+
+
 class TokenResponseSerializer(serializers.Serializer):
     refresh = serializers.CharField(read_only=True)
     access = serializers.CharField(read_only=True)
@@ -94,7 +108,6 @@ class UserLoginSerializer(serializers.Serializer):
 
 
 class UserDetailSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = User
         fields = ("id", "email", "first_name", "last_name")

@@ -8,8 +8,14 @@ from rest_framework.viewsets import ModelViewSet
 from django.contrib.auth import get_user_model
 from django_filters.rest_framework import DjangoFilterBackend
 
-from payments.permissions import IsAdminRole 
-from .serializers import UserLoginSerializer, UserRegistrationSerializer, TokenResponseSerializer, RoleSerializer
+from payments.permissions import IsAdminRole
+from .serializers import (
+    RoleSerializer,
+    TokenResponseSerializer,
+    UserLoginSerializer,
+    UserRegistrationSerializer,
+    UserResponseSerializer,
+)
 from .utils import generate_jwt_token
 from .models import Role
 
@@ -40,10 +46,10 @@ class UserLoginView(APIView):
 
 
 class UserViewSet(ModelViewSet):
-    pagination_class =PageNumberPagination
     permission_classes = [IsAdminRole]
     queryset = User.objects.all()
-    serializer_class = UserRegistrationSerializer
+    serializer_class = UserResponseSerializer
+    pagination_class = PageNumberPagination
     filter_backends = [DjangoFilterBackend]
     filterset_fields = {
         "email": ["iexact", "icontains"],
@@ -51,13 +57,11 @@ class UserViewSet(ModelViewSet):
         "last_name": ["iexact"],
         "roles__name": ["iexact"],
     }
-
-
 class UserView(APIView):
-    serializer_class = UserRegistrationSerializer
+    serializer_class = UserResponseSerializer
 
     def get(self, request):
-        serializer = UserRegistrationSerializer(request.user)
+        serializer = UserResponseSerializer(request.user)
         return Response(serializer.data)
 
 
