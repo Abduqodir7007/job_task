@@ -15,7 +15,7 @@ from django.db.models.functions import Coalesce
 
 class PaymentCreateListView(ListCreateAPIView):
     queryset = Payment.objects.select_related("user").all()
-    permission_classes = [IsPaymentRole, IsAdminRole]
+    permission_classes = [IsPaymentRole | IsAdminRole]
     serializer_class = PaymentSerializer
     filter_backends = [DjangoFilterBackend]
     pagination_class = PageNumberPagination
@@ -29,8 +29,7 @@ class PaymentCreateListView(ListCreateAPIView):
     }
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user, status="completed") # set status to completed for testing
-
+        serializer.save(user=self.request.user, status="completed")  # set status to completed for testing
 
     def get_serializer_class(self):
         if self.request.method == "POST":
@@ -39,7 +38,7 @@ class PaymentCreateListView(ListCreateAPIView):
 
 
 class PaymentReport(APIView):
-    permission_classes = [IsReportRole, IsAdminRole]
+    permission_classes = [IsReportRole | IsAdminRole]
     serializer_class = PaymentReportSerializer
 
     def get(self, request, *args, **kwargs):

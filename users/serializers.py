@@ -35,8 +35,12 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         return value
 
     def validate_password(self, value):
+        special_characters = "!@#$%^&*()-_=+[]{}|;:,.<>?/"
+        if not any(ch in special_characters for ch in value):
+            raise serializers.ValidationError(_("Password must contain at least one special character."))
+
         user = self.context.get("request").user if self.context.get("request") else None
-        validate_password(value, user)
+        validate_password(value, user)  # additional validation, built-in validators
         return value
 
     def validate_first_name(self, value):
@@ -53,8 +57,12 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         roles = validated_data.pop("roles", [])
         password = validated_data.pop("password")
         user = User.objects.create_user(password=password, **validated_data)
+        user_role = Role.objects.filter(name=Constants.UserRoles.USER).first()
+
         if roles:
             user.roles.set(roles)
+        else:
+            user.roles.add(user_role)  # default role is user role
         return user
 
 

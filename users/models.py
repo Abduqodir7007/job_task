@@ -47,7 +47,7 @@ class User(AbstractBaseUser, PermissionsMixin, TimestampedModel):
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=50, validators=[validators.MinLengthValidator(2)])
     last_name = models.CharField(max_length=50, validators=[validators.MinLengthValidator(2)])
-    roles = models.ManyToManyField("Role", related_name="users", default=Constants.UserRoles.DEFAULT)
+    roles = models.ManyToManyField("Role", related_name="users")
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
