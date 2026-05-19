@@ -1,4 +1,5 @@
 from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
@@ -8,12 +9,15 @@ from rest_framework.viewsets import ModelViewSet
 from django.contrib.auth import get_user_model
 from django_filters.rest_framework import DjangoFilterBackend
 
+
+from config.constants import Constants
 from payments.permissions import IsAdminRole
 from .serializers import (
     RoleSerializer,
     TokenResponseSerializer,
     UserLoginSerializer,
     UserRegistrationSerializer,
+    UserDashboardSerializer,
     UserResponseSerializer,
 )
 from .utils import generate_jwt_token
@@ -57,6 +61,28 @@ class UserViewSet(ModelViewSet):
         "last_name": ["iexact"],
         "roles__name": ["iexact"],
     }
+
+    @action(detail=False, methods=["get"], permission_classes=[IsAdminRole])
+    def dashboard(self, request):
+        total_users = User.objects.count()
+        active_users = User.objects.filter(is_active=True).count()
+        admin_users = User.objects.filter(roles__name=Constants.UserRoles.ADMIN).count()
+        payment_users = User.objects.filter(roles__name=Constants.UserRoles.PAYMENT).count()
+        report_users = User.objects.filter(roles__name=Constants.UserRoles.REPORTS).count()
+
+        data = {
+            "total_users": total_users,
+            "active_users": active_users,
+            "admin_users": admin_users,
+            "payment_users": payment_users,
+            "report_users": report_users,
+        }
+        
+        serializer = UserDashboardSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 class UserView(APIView):
     serializer_class = UserResponseSerializer
 

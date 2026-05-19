@@ -119,3 +119,10 @@ class UserDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ("id", "email", "first_name", "last_name")
+
+class UserDashboardSerializer(serializers.Serializer):
+    total_users = serializers.IntegerField()
+    active_users = serializers.IntegerField()
+    admin_users = serializers.IntegerField()
+    payment_users = serializers.IntegerField()
+    report_users = serializers.IntegerField()
