@@ -190,6 +190,34 @@ Other user management endpoints:
 | `PATCH` | `/api/users/{id}/` | Partially update a user |
 | `DELETE` | `/api/users/{id}/` | Delete a user |
 
+### Dashboard
+
+`GET /api/users/dashboard/`
+
+Returns user counts for the admin dashboard.
+
+Requires JWT authentication and admin role.
+
+Response body:
+
+```json
+{
+  "total_users": 100,
+  "active_users": 92,
+  "admin_users": 3,
+  "payment_users": 12,
+  "report_users": 8
+}
+```
+
+Status codes:
+
+| Code | Meaning |
+| --- | --- |
+| `200 OK` | Dashboard data returned successfully |
+| `401 Unauthorized` | Missing or invalid JWT token |
+| `403 Forbidden` | Authenticated user does not have the admin role |
+
 ## Payments API
 
 ### Payments List
